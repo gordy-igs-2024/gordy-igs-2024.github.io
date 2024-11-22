@@ -48,16 +48,18 @@
         linear-gradient(135deg, hsl(var(--hue) 100% 50%) 25%, transparent 25%),
         linear-gradient(45deg, transparent 75%, hsl(var(--hue) 100% 50%) 75%),
         linear-gradient(135deg, transparent 75%, hsl(var(--hue) 100% 50%) 75%);
-      background-size: 6vmin 6vmin;
-      background-position: 0 0, 3vmin 0, 3vmin -3vmin, 0 3vmin;
+      background-size: 12vmin 12vmin;
+      background-position: 0 0, 6vmin 0, 6vmin -6vmin, 0 6vmin;
     }
     h1 {
       font-weight: bold;
       margin: 1rem;
+      text-align: center;
+      line-height: 0.8;
     }
   </style>
   <body>
-    <h1>Are we?</h1>
+    <h1>Are we quorate?</h1>
 
     <script>
       function createProgress() {
@@ -93,7 +95,7 @@
           body.style.setProperty("--progress", "0%");
           body.style.setProperty("--hue", "0deg");
           body.classList.remove("quorate");
-          text.textContent = `Are we?`;
+          text.textContent = `Are we quorate?`;
           return;
         }
 
@@ -102,7 +104,7 @@
         body.style.setProperty("--hue", currentProgress * 3.6 + "deg");
 
         if (currentProgress >= 100) {
-          text.textContent = `QUORATE!`;
+          text.textContent = `WE ARE QUORATE!`;
           body.classList.add("quorate");
           isComplete = true;
           let hue = 0;
