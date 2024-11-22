@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodbye Gordy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #typing-container, #output-container {
+            font-size: 18px;
+            color: #333;
+            white-space: pre-wrap; /* Preserve line breaks and spaces */
+            text-align: left;
+            margin: 0 auto;
+            width: 80%;
+            max-width: 900px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        pre {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <pre><code id="typing-container" class="python"></code></pre>
+    <div id="output-container" style="display: none;"></div>
+
+    <script>
+        // Function to animate typing of a message
+        function typeMessage(elementId, message, typingSpeed = 100, callback = null) {
+            const element = document.getElementById(elementId);
+            if (!element) {
+                console.error(`Element with id "${elementId}" not found.`);
+                return;
+            }
+
+            let index = 0;
+
+            function typeNextCharacter() {
+                if (index < message.length) {
+                    element.textContent += message[index];
+                    index++;
+                    // Apply syntax highlighting incrementally
+                    hljs.highlightElement(element);
+                    setTimeout(typeNextCharacter, typingSpeed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+
+            typeNextCharacter();
+        }
+
+        // Restart the animation after showing an error
+        function restartTyping() {
+            document.getElementById("typing-container").textContent = "";
+            document.getElementById("output-container").style.display = "none";
+            startTypingAnimation();
+        }
+
+        function startTypingAnimation() {
+            const pythonCode = `class GordyFarewellGenerator:
+
+    def __init__(self, thankful_for, joke):
+        self.thankful_for = thankful_for
+        self.joke = joke
+
+    def print(self):
+        print(f"Thank you for being so {self.instance_variable}.")
+        print(f"{self.joke}")
+        print("All the best with everything ahead 👋!")
+
+farewell = GordyFarewellGenerator("patient (sometimes), caring & team-spirited", "If only we had all learned to write majestic Python like this from the start...")
+farewell.print()`;
+
+            const output = `Thank you for being so patient (sometimes), caring & team-spirited.
+If only we had all learned to write majestic Python like this from the start...
+All the best with everything ahead 👋!`;
+
+            const outputContainer = document.getElementById("output-container");
+
+            typeMessage("typing-container", pythonCode, 50, () => {
+                setTimeout(() => {
+                    outputContainer.style.display = "block";
+                    outputContainer.textContent = `Thank you for being so patient (sometimes), caring & team-spirited.
+If only we had all learned to write majestic Python like this from the start...
+All the best with everything ahead 👋!`;
+                    setTimeout(() => {
+                        outputContainer.textContent = "Error: Something went wrong!";
+                        setTimeout(restartTyping, 1500); // before restart
+                    }, 3000); // before error
+                }, 300); // before output
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", startTypingAnimation);
+    </script>
+</body>
+</html>
+
+
+
