@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quorate</title>
+  </head>
+  <style>
+    body {
+      --progress: 0;
+      --hue: 0;
+      margin: 0;
+      user-select: none;
+      block-size: 100vh;
+      inline-size: 100vw;
+      font-family: system-ui;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background: linear-gradient(
+        to right,
+        hsl(var(--hue) 80% 50%) 0%,
+        hsl(var(--hue) 100% 50%) var(--progress),
+        white var(--progress),
+        white 100%
+      );
+    }
+    @keyframes exhale {
+      0% {
+        transform: scale(0.8);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    .quorate {
+      animation: exhale 3s infinite ease-in-out alternate;
+      color: hsl(calc(var(--hue) + 60deg) 70% 30%);
+      mix-blend-mode: plus-lighter;
+      font-size: 9vw;
+      justify-content: center;
+      background-color: hsl(calc(var(--hue) + 120deg) 70% 30%);
+      background-image: linear-gradient(
+          45deg,
+          hsl(var(--hue) 100% 50%) 25%,
+          transparent 25%
+        ),
+        linear-gradient(135deg, hsl(var(--hue) 100% 50%) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, hsl(var(--hue) 100% 50%) 75%),
+        linear-gradient(135deg, transparent 75%, hsl(var(--hue) 100% 50%) 75%);
+      background-size: 6vmin 6vmin;
+      background-position: 0 0, 3vmin 0, 3vmin -3vmin, 0 3vmin;
+    }
+    h1 {
+      font-weight: bold;
+      margin: 1rem;
+    }
+  </style>
+  <body>
+    <h1>Are we?</h1>
+
+    <script>
+      function createProgress() {
+        let progress = 0;
+        return {
+          increment: function () {
+            if (progress >= 100) {
+              return 100;
+            }
+            progress += Math.min(Math.random() * 40 + 1, 100 - progress);
+            return progress;
+          },
+          reset: function () {
+            progress = 0;
+          },
+        };
+      }
+
+      const progressFunction = createProgress();
+
+      const text = document.querySelector("h1");
+      const body = document.body;
+      const audio = new Audio("assets/quorate.mp3");
+      let timer;
+      let isComplete = false;
+
+      body.addEventListener("click", () => {
+        if (isComplete) {
+          audio.pause();
+          clearInterval(timer);
+          isComplete = false;
+          progressFunction.reset();
+          body.style.setProperty("--progress", "0%");
+          body.style.setProperty("--hue", "0deg");
+          body.classList.remove("quorate");
+          text.textContent = `Are we?`;
+          return;
+        }
+
+        const currentProgress = progressFunction.increment();
+        body.style.setProperty("--progress", currentProgress + "%");
+        body.style.setProperty("--hue", currentProgress * 3.6 + "deg");
+
+        if (currentProgress >= 100) {
+          text.textContent = `QUORATE!`;
+          body.classList.add("quorate");
+          isComplete = true;
+          let hue = 0;
+          let loop = 0;
+          timer = setInterval(() => {
+            hue = (loop++ % 360) + 1;
+            body.style.setProperty("--hue", hue + "deg");
+          }, 10);
+          audio.play();
+        }
+      });
+    </script>
+  </body>
+</html>
