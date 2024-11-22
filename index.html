@@ -1,13 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html dir="auto" lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>IGS</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>Static</title>
+    <link rel="stylesheet" href="https://eco.app.igs.farm/dist/eco.css" />
+    <script
+      type="module"
+      src="https://eco.app.igs.farm/dist/eco.esm.js"
+    ></script>
+    <script nomodule src="https://eco.app.igs.farm/dist/index.esm.js"></script>
   </head>
-
   <body>
-    <ul>
-      <li><a href="quorate.html">Are we?</a></li>
-    </ul>
+    <eco-layout-body>
+      <eco-layout-nav slot="layout-nav" app-name="Buh bye Gordy 😭">
+        <eco-nav-link href="quorate.html" label="Quorate"></eco-nav-link>
+      </eco-layout-nav>
+      <eco-card>
+        <eco-text-heading slot="header" level="2">
+          buh bye gordy
+        </eco-text-heading>
+        Some stuff here.
+      </eco-card>
+    </eco-layout-body>
   </body>
 </html>
