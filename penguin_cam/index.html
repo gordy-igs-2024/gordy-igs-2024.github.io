@@ -1,0 +1,387 @@
+<html>
+<head>
+
+<style>
+
+@font-face {font-family:"NewBeginnings";src:url("./NewBeginnings.woff2") format("woff2"),url("/themes/ud/fonts/NewBeginnings.woff") format("woff"),url("/themes/ud/fonts/NewBeginnings.otf") format("opentype");font-display:auto;font-style:normal;font-weight:400;font-stretch:normal;}
+
+body {
+  background: white;
+}
+
+h1 {
+  font-family: NewBeginnings, sans-serif;
+
+}
+
+.container {
+  width: 700px;
+  height: 400px;
+  position: relative;
+}
+
+.greyscale {
+  filter: grayscale(100%);
+}
+
+.play-button {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 200;
+  background: url("./play_button.svg");
+  background-size: 100% 100%;
+  cursor: pointer;
+}
+
+.sky-background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 10;
+}
+
+.sky-background.day {
+  background: #8cffff;
+}
+
+.sky-background.sunset {
+  background: #FA5F55;
+}
+
+.sky-background.night {
+  background: #280137;
+}
+
+.background {
+  width: 100%;
+  height: 100%;
+  background: url("./background.png");
+  background-size: 100% 100%;
+  z-index: 20;
+  position: absolute;
+}
+
+.text {
+  width: 700px;
+}
+
+.penguin {
+position: absolute;
+}
+
+.penguin.front {
+	background: url("./penguin_front.png");
+	background-size: 100% 100%;
+}
+
+.penguin.right {
+	background: url("./penguin_side.png");
+	background-size: 100% 100%;
+}
+
+.penguin.left {
+	background: url("./penguin_side.png");
+	background-size: 100% 100%;
+	transform: scaleX(-1);
+}
+
+.penguin.front.sleep {
+	background: url("./penguin_front_sleep.png");
+	background-size: 100% 100%;
+}
+
+.penguin.right.sleep {
+	background: url("./penguin_side_sleep.png");
+	background-size: 100% 100%;
+}
+
+.penguin.left.sleep {
+	background: url("./penguin_side_sleep.png");
+	background-size: 100% 100%;
+	transform: scaleX(-1);
+}
+
+/* Floating hover effect with two heights */
+@keyframes float {
+  0% {
+    translate: 0px 5px;
+	clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+  }
+  100% {
+    translate: 0px 0px;
+	clip-path: polygon(0 0, 100% 0, 100% 55%, 0 55%);
+  }
+}
+.floating {
+  animation: float 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes float-opposite {
+  0% {
+    translate: 0px 0px;
+  }
+  100% {
+    translate: 0px 5px;
+  }
+}
+
+
+
+@keyframes walk {
+  0% {
+    rotate: -2deg;
+  }
+  50% {
+    rotate: 2deg;
+  }
+  100% {
+    rotate: -2deg;
+  }
+}
+.walking {
+  animation: walk 1s ease-in-out infinite;
+}
+
+
+.water {
+	position: relative;
+	top: 40%;
+	height: 20%;
+	background: url("./water_level.png");
+    background-size: 100% 100%;
+	animation: float-opposite 1.5s ease-in-out infinite alternate;
+}
+
+
+</style>
+
+</head>
+
+<body>
+
+<audio id='crickets' loop>
+	<source src="./bbc_countrysid_0009031.mp3">
+</audio>
+<audio id='penguins' loop>
+	<source src="./bbc_adelie-pen_nhu0501016.mp3">
+</audio>
+<h1>Watch the penguins live!</h1>
+<div class="container" id="container">
+	
+	<div class="sky-background" id="sky-background"></div>
+	<div class="background" id="background"></div>
+	<div class="play-button" id="play-button"></div>
+	
+	
+	
+</div>
+
+<div class="text">
+	<p>
+	  I tried getting a stream of the Penguin Cam working but unfortunately it doesn't seem possible without breaking CORS or running it through a proxy.
+	  If you manage to change the Referer header to "https://www.edinburghzoo.org.uk/" then I think you can get it to work but I don't think I can do it here.
+	</p>
+	<p>
+	  Hopefully this can suffice in the meantime!
+	</p>
+	<p>
+	  - Stephen
+	</p>
+</div>
+
+<script type="text/javascript">
+	
+	var audio_penguins = document.getElementById("penguins");
+    audio_penguins.volume = 0.7;
+	
+	var audio_crickets = document.getElementById("crickets");
+    audio_crickets.volume = 0.7;
+	
+	const penguin_positions = ["front", "left", "right"]
+	const background = document.getElementById("background")
+
+	Penguin = class{
+		constructor(id, parent, root_class, top, min_left, max_left, width, height, zindex) {
+			this.parent = parent
+			this.root_class = root_class
+		
+			this.penguin_icon = document.createElement("DIV");
+			this.penguin_facing = penguin_positions[Math.floor(Math.random() * penguin_positions.length)]
+		    this.penguin_icon.className = this.root_class + " " + this.penguin_facing
+		    this.penguin_icon.id = id
+			
+			this.min_left = min_left
+			this.max_left = max_left
+			this.curr_left = Math.floor(Math.random() * (this.max_left - this.min_left)) + this.min_left
+			this.new_left = this.curr_left
+			
+		    this.penguin_icon.style.top = top
+		    this.penguin_icon.style.left = this.curr_left + "%"
+			// this.penguin_icon.style.left = "50%"
+			// this.penguin_icon.style.left = "90%"
+		    this.penguin_icon.style.width = width
+		    this.penguin_icon.style.height = height
+			this.penguin_icon.style.zIndex = zindex
+			this.parent.appendChild(this.penguin_icon)
+			
+			if (this.penguin_icon.classList.contains("floating")) {
+			  this.water_icon = document.createElement("DIV");
+			  this.water_icon.className = "water"
+			  this.water_icon.style.zIndex = zindex + 1
+			  this.penguin_icon.appendChild(this.water_icon)
+			}
+			
+			this.moving_direction = "right"
+			this.moving_speed = 0.1 + (0.05 * Math.random())
+			this.moving_interval = 100
+			this.moving_schedule = null
+			
+			
+			this.idle_change_time = 5 * 1000 // seconds
+			this.idle_change_time_variation = 3 * 1000
+			this.idle_change_schedule = null
+		}
+		
+		idle_change = () => {
+		
+			if (Math.random() <= 0.05) {
+			    if (this.idle_change_schedule) {clearTimeout(this.idle_change_schedule)}
+				this.new_left = Math.floor(Math.random() * (this.max_left - this.min_left)) + this.min_left
+				
+				if (this.new_left > this.curr_left) {
+				  this.moving_direction = "right"
+				  this.penguin_icon.className = this.root_class + " " + "right"
+				} else {
+				  this.moving_direction = "left"
+				  this.penguin_icon.className = this.root_class + " " + "left"
+				  
+				}
+				if (!this.penguin_icon.classList.contains("floating")) {
+				  this.penguin_icon.classList.add("walking")
+				}
+				
+				
+				this.moving_schedule = setTimeout(this.moving, this.moving_interval)
+			
+			} else {
+				this.penguin_facing = penguin_positions[Math.floor(Math.random() * penguin_positions.length)]
+				this.penguin_icon.className = this.root_class + " " + this.penguin_facing
+				this.idle_change_schedule = setTimeout(this.idle_change, Math.random() * 2 * this.idle_change_time - this.idle_change_time)
+			}
+			
+			
+		}
+		
+		moving = () => {
+			if (this.moving_direction == "right") {
+			  this.curr_left += this.moving_speed
+			  this.penguin_icon.style.left = this.curr_left + "%"
+			  if (this.new_left > this.curr_left) {
+			    this.moving_schedule = setTimeout(this.moving, this.moving_interval)
+			  } else {
+			    if (this.moving_schedule) {clearTimeout(this.moving_schedule)}
+			    this.idle_change()
+			  }
+			} else {
+			  this.curr_left -= this.moving_speed
+			  this.penguin_icon.style.left = this.curr_left + "%"
+			  if (this.new_left < this.curr_left) {
+			    this.moving_schedule = setTimeout(this.moving, this.moving_interval)
+			  } else {
+			    if (this.moving_schedule) {clearTimeout(this.moving_schedule)}
+			    this.idle_change()
+			  }
+			}
+		}
+		
+		sleep = () => {
+			if (this.moving_schedule) {clearTimeout(this.moving_schedule)}
+			if (this.idle_change_schedule) {clearTimeout(this.idle_change_schedule)}
+			this.penguin_icon.classList.remove("walking")
+			this.penguin_icon.classList.add("sleep")
+		}
+		
+		wake = () => {
+		  this.penguin_icon.classList.remove("sleep")
+		  if (!this.idle_change_schedule && !this.moving_schedule) {
+		    this.idle_change_schedule = setTimeout(this.idle_change, Math.random() * 2 * this.idle_change_time - this.idle_change_time)
+		  }
+		}
+		
+	}
+	
+	var penguin_array = new Array()
+	penguin_array.push(new Penguin("penguin1", background, "penguin", "73%", 50, 90, "70", "101", 73))
+	penguin_array.push(new Penguin("penguin2", background, "penguin", "70%", 50, 90, "70", "101", 70))
+	penguin_array.push(new Penguin("penguin3", background, "penguin", "68%", 70, 90, "70", "101", 68))
+	
+	penguin_array.push(new Penguin("penguin4", background, "penguin floating", "30%", 10, 50, "58", "85", 30))
+	penguin_array.push(new Penguin("penguin5", background, "penguin floating", "40%", 10, 80, "58", "85", 40))
+	penguin_array.push(new Penguin("penguin6", background, "penguin floating", "55%", 10, 70, "58", "85", 55))
+	penguin_array.push(new Penguin("penguin7", background, "penguin floating", "65%", 10, 60, "58", "85", 65))
+	
+	penguin_array.push(new Penguin("penguin8", background, "penguin", "5%", 40, 90, "28", "40", 5))
+	penguin_array.push(new Penguin("penguin9", background, "penguin", "6%", 40, 90, "28", "40", 5))
+	penguin_array.push(new Penguin("penguin10", background, "penguin", "12%", 60, 90, "35", "50", 5))
+	penguin_array.push(new Penguin("penguin11", background, "penguin", "17%", 60, 90, "35", "50", 5))
+	
+	
+	
+	check_time = function() {
+		currentTime = new Date()
+		currentHour = currentTime.getHours();
+		
+		container_element = document.getElementById("container")
+		sky_element = document.getElementById("sky-background")
+		
+		if (currentHour >= 19 || currentHour < 6) {
+		  sky_element.className = "sky-background night"
+		  container_element.classList.add("greyscale")
+		  for (key in penguin_array) {
+		    penguin = penguin_array[key]
+		    penguin.sleep()
+		  }
+		  document.getElementById('penguins').pause();
+		  document.getElementById('crickets').currentTime = 0;
+	      document.getElementById('crickets').play();
+		} else if ((currentHour < 19 && currentHour >= 18) || (currentHour < 7 && currentHour >= 6)) {
+		  sky_element.className = "sky-background sunset"
+		  container_element.classList.remove("greyscale")
+		  for (key in penguin_array) {
+		    penguin = penguin_array[key]
+		    penguin.wake()
+		  }
+		  document.getElementById('crickets').pause();
+		  document.getElementById('penguins').currentTime = 0;
+	      document.getElementById('penguins').play();
+		} else {
+		  sky_element.className = "sky-background day"
+		  container_element.classList.remove("greyscale")
+		  for (key in penguin_array) {
+		    penguin = penguin_array[key]
+		    penguin.wake()
+		  }
+		  document.getElementById('crickets').pause();
+		  document.getElementById('penguins').currentTime = 0;
+	      document.getElementById('penguins').play();
+		}
+		
+		
+		
+		setTimeout(check_time, 60000)
+	
+	}
+	
+	
+	play = function(e) {
+	  console.log("play")
+	  check_time()
+	  button_el = document.getElementById("play-button")
+	  button_el.style.display = "none"
+	}
+	button_el = document.getElementById("play-button")
+	button_el.addEventListener('click', play)
+
+</script>
+
