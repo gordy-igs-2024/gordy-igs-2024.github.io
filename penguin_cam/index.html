@@ -267,7 +267,7 @@ position: absolute;
 			} else {
 				this.penguin_facing = penguin_positions[Math.floor(Math.random() * penguin_positions.length)]
 				this.penguin_icon.className = this.root_class + " " + this.penguin_facing
-				this.idle_change_schedule = setTimeout(this.idle_change, Math.random() * 2 * this.idle_change_time - this.idle_change_time)
+				this.idle_change_schedule = setTimeout(this.idle_change, (2 * Math.random() - 1) * this.idle_change_time_variation + this.idle_change_time)
 			}
 			
 			
@@ -305,7 +305,7 @@ position: absolute;
 		wake = () => {
 		  this.penguin_icon.classList.remove("sleep")
 		  if (!this.idle_change_schedule && !this.moving_schedule) {
-		    this.idle_change_schedule = setTimeout(this.idle_change, Math.random() * 2 * this.idle_change_time - this.idle_change_time)
+		    this.idle_change_schedule = setTimeout(this.idle_change, (2 * Math.random() - 1) * this.idle_change_time_variation + this.idle_change_time)
 		  }
 		}
 		
