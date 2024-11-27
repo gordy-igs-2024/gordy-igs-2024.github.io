@@ -13,6 +13,34 @@
       src="https://eco.app.igs.farm/dist/eco.esm.js"
     ></script>
     <script nomodule src="https://eco.app.igs.farm/dist/index.esm.js"></script>
+    <style>
+     
+        @keyframes hor-movement {
+          from {
+            margin-left: 0%;
+          }
+          to {
+            margin-left: 90%;
+          }
+        }
+        
+        @keyframes ver-movement {
+          from {
+            margin-top: 0%;
+          }
+          to {
+            margin-top: 30%;
+          }
+        }
+        
+        .bouncy {
+          position: absolute;
+          animation-name: hor-movement, ver-movement;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+          animation-timing-function: linear;
+        }
+    </style>
   </head>
   <body>
     <eco-layout-body>
@@ -26,7 +54,7 @@
         Some stuff here.
       </eco-card>
 
-      <eco-card style="width:300px; margin-top:10px">
+      <eco-card style="width:300px; margin-top:10px; animation-duration: 6s, 2s;" class="bouncy">
         <a href="python-code.html">
         <eco-text-heading slot="header" level="2" >
           Python Lesson
@@ -35,7 +63,7 @@
       </a>
       </eco-card>
 
-      <eco-card style="width:300px; margin-top:10px">
+      <eco-card style="width:300px; margin-top:10px; animation-duration: 4s, 5s;" class="bouncy">
         <a href="/penguin_cam/">
           <eco-text-heading slot="header" level="2" >
             Penguin Cam
@@ -44,7 +72,7 @@
         </a>
       </eco-card>
 
-      <eco-card style="width:300px; margin-top:10px">
+      <eco-card style="width:300px; margin-top:10px; animation-duration: 3s, 7s;" class="bouncy">
         <a href="journey.html">
           <eco-text-heading slot="header" level="2" >
             The Journey
